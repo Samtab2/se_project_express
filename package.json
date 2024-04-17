@@ -11,6 +11,7 @@
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-import": "^2.27.5",
     "globals": "^15.0.0",
+    "nodemon": "^3.1.0",
     "prettier": "^2.8.8"
   },
   "name": "se_project_express",
@@ -18,7 +19,9 @@
   "version": "0.1.0",
   "main": "app.js",
   "scripts": {
-    "lint": "npx eslint ."
+    "lint": "npx eslint .",
+    "start": "node app.js",
+    "dev": "nodemon app.js"
   },
   "author": "Sammy Tabally",
   "license": "ISC"
