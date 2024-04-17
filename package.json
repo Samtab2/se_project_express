@@ -1,6 +1,7 @@
 {
   "dependencies": {
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "mongoose": "^6.6.1"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.24.1",
