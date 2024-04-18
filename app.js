@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const mainRouter = require("./routes/users");
 
 mongoose.set("strictQuery", true);
 mongoose
@@ -12,6 +13,8 @@ mongoose
 const app = express();
 
 const { PORT = 3001 } = process.env;
+
+app.use("/", mainRouter);
 
 console.log("testing");
 
