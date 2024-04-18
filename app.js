@@ -16,6 +16,8 @@ const { PORT = 3001 } = process.env;
 
 app.use("/", mainRouter);
 
+app.use(express.json());
+
 console.log("testing");
 
 app.listen(PORT, () => {
