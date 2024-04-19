@@ -2,6 +2,7 @@ const ClothingItem = require("../models/clothingItems");
 
 
 
+
 const createItem = (req, res) => {
      console.log(req.body);
      console.log(req)
@@ -15,6 +16,10 @@ const createItem = (req, res) => {
         res.status(500).send({message: "Error from createIem", err})
     })
 }
+
+router.use((req, res) => {
+    res.status(500).send({ message: "Router not Found" });
+})
 
 module.exports = {
     createItem

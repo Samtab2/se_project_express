@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
+const router = require("express").Router();
 
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true, minlength: 2, maxlength: 30 },
@@ -14,5 +15,9 @@ const userSchema = new mongoose.Schema({
     },
   },
 });
+
+router.use((req, res) => {
+  res.status(500).send({ message: "Router not Found" });
+})
 
 module.exports = mongoose.model("user", userSchema);
