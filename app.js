@@ -1,6 +1,9 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const userRouter = require("./routes/index");
+const mainRouter = require("./routes/index");
+
+const app = express();
+const { PORT = 3001 } = process.env;
 
 mongoose.set("strictQuery", true);
 mongoose
@@ -8,15 +11,18 @@ mongoose
   .then(() => {
     console.log("Connected to DB");
   })
-   .catch(console.error);
-
-const app = express();
-
-const { PORT = 3001 } = process.env;
-
-app.use("/", userRouter);
+  .catch(console.error);
 
 app.use(express.json());
+
+app.use((req, res, next) => {
+  req.user = {
+    _id: '5d8b8592978f8bd833ca8133'
+  };
+  next();
+});
+
+app.use("/", mainRouter);
 
 console.log("testing");
 
