@@ -9,9 +9,9 @@ const {
 
 // Create
 const createItem = (req, res) => {
-  const { name, weather, imageURL } = req.body;
+  const { Name, Weather, ImageURL } = req.body;
 
-  ClothingItem.create({ name, weather, imageURL, user: req.user._id })
+  ClothingItem.create({ Name, Weather, ImageURL, user: req.user._id })
     .then((item) => res.status(REQUEST_CREATED).send({ data: item }))
     .catch((err) => {
       console.error(err);
@@ -23,8 +23,7 @@ const createItem = (req, res) => {
 };
 // Get
 const getItems = (req, res) => {
-
-  ClothingItem.find({})
+  ClothingItem.find()
     .then((item) => res.status(REQUEST_SUCCESSFUL).send(item))
     .catch((err) => {
       console.error(err);
@@ -56,16 +55,19 @@ const likeItem = (req, res) => {
     { $addToSet: { likes: req.user._id } },
     { new: true }
   )
-    .orFail()
+    .orFail(() => {
+      const error = new Error("Item ID not found");
+      error.statusCode = NOT_FOUND.code;
+      throw error;
+    })
     .then((item) => res.status(REQUEST_SUCCESSFUL).send(item))
     .catch((err) => {
       console.error(err);
-      if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND.code).send(NOT_FOUND.text);
-      }
       if (err.name === "CastError")
         return res.status(INVALID_DATA.code).send(INVALID_DATA.text);
-      return res.status(SERVER_ERROR.code).send(SERVER_ERROR.text);
+      return res
+        .status(err.statusCode || SERVER_ERROR.code)
+        .send(err.message || SERVER_ERROR.text);
     });
 };
 
@@ -76,17 +78,19 @@ const dislikeItem = (req, res) => {
     { $pull: { likes: req.user._id } },
     { new: true }
   )
-    .orFail()
+    .orFail(() => {
+      const error = new Error("Item ID not found");
+      error.statusCode = NOT_FOUND.code;
+      throw error;
+    })
     .then((item) => res.status(REQUEST_SUCCESSFUL).send(item))
     .catch((err) => {
       console.error(err);
-      if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND.code).send(NOT_FOUND.text);
-      }
-      if (err.name === "CastError") {
+      if (err.name === "CastError")
         return res.status(INVALID_DATA.code).send(INVALID_DATA.text);
-      }
-      return res.status(SERVER_ERROR.code).send(SERVER_ERROR.text);
+      return res
+        .status(err.statusCode || SERVER_ERROR.code)
+        .send(err.message || SERVER_ERROR.text);
     });
 };
 
