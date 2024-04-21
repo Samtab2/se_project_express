@@ -9,9 +9,9 @@ const {
 
 // Create
 const createItem = (req, res) => {
-  const { Name, Weather, ImageURL } = req.body;
+  const { Name, Weather, ImageUrl } = req.body;
 
-  ClothingItem.create({ Name, Weather, ImageURL, user: req.user._id })
+  ClothingItem.create({ Name, Weather, ImageUrl, owner: req.user._id })
     .then((item) => res.status(REQUEST_CREATED).send({ data: item }))
     .catch((err) => {
       console.error(err);
