@@ -17,11 +17,26 @@ const SERVER_ERROR = {
         message: "Server error please try again later"
     }
 }
+    const CONFLICT = {
+        code: 409,
+        text: {
+            message: "Duplicate key error"
+        }
+    }
+        const UNAUTHORIZED = {
+            code: 401,
+            text: {
+                message: "Unauthorized"
+            }
+}
+
 
 module.exports = {
     REQUEST_SUCCESSFUL,
     REQUEST_CREATED,
     INVALID_DATA,
     NOT_FOUND,
-    SERVER_ERROR
+    SERVER_ERROR,
+    CONFLICT,
+    UNAUTHORIZED
 }
