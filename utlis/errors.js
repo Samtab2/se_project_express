@@ -31,6 +31,13 @@ const UNAUTHORIZED = {
   },
 };
 
+const FORBIDDEN = {
+  code: 403,
+  text: {
+    message: "Forbidden",
+  },
+};
+
 module.exports = {
   REQUEST_SUCCESSFUL,
   REQUEST_CREATED,
@@ -39,4 +46,5 @@ module.exports = {
   SERVER_ERROR,
   CONFLICT,
   UNAUTHORIZED,
+  FORBIDDEN,
 };

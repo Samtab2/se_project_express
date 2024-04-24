@@ -16,19 +16,7 @@ const {
   UNAUTHORIZED,
 } = require("../utlis/errors");
 
-// GET /users
-
-const getUsers = (req, res) => {
-  User.find()
-    .then((users) => res.status(REQUEST_SUCCESSFUL).send(users))
-    .catch((err) => {
-      console.error(err);
-      return res.status(SERVER_ERROR.code).send(SERVER_ERROR.text);
-    });
-};
-
 // CREATE
-// eslint-disable-next-line consistent-return
 const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
 
@@ -49,7 +37,7 @@ const createUser = (req, res) => {
     .then((hashedPassword) =>
       User.create({ name, avatar, email, password: hashedPassword })
     )
-    .then((user) => res.status(REQUEST_CREATED).send(user))
+    .then((user) => res.status(REQUEST_CREATED).send(user.sl))
     .catch((err) => {
       console.error(err);
 
@@ -63,10 +51,12 @@ const createUser = (req, res) => {
 
       return res.status(SERVER_ERROR.code).send(SERVER_ERROR.text);
     });
+  return null;
 };
+
 // GET
 const getUser = (req, res) =>
-  User.findById(req.params.userId)
+  User.findById(req.user._id)
     .orFail()
     .then((user) => res.status(REQUEST_SUCCESSFUL).send(user))
     .catch((err) => {
@@ -100,7 +90,7 @@ const loginUser = (req, res) => {
       if (!user) {
         return res
           .status(UNAUTHORIZED.code)
-          .send({ message: "Wrong email or password" });
+          .send({ message: "Incorrect email or password" });
       }
 
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
@@ -137,7 +127,6 @@ const updateUser = (req, res) => {
 };
 
 module.exports = {
-  getUsers,
   createUser,
   getUser,
   loginUser,

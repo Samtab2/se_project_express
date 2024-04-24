@@ -5,6 +5,7 @@ const {
   INVALID_DATA,
   NOT_FOUND,
   SERVER_ERROR,
+  FORBIDDEN,
 } = require("../utlis/errors");
 
 // Create
@@ -33,18 +34,21 @@ const getItems = (req, res) => {
 
 // Delete
 const deleteItem = (req, res) => {
-  ClothingItem.findByIdAndDelete(req.params.itemId)
+  const { itemId } = req.params;
+  ClothingItem.findByIdAndRemove(itemId)
     .orFail()
-    .then((item) => res.status(REQUEST_SUCCESSFUL).send(item))
+    .then((item) => {
+      if (item.owner.toString() !== req.user._id) {
+        return res
+          .status(FORBIDDEN.code)
+          .send(FORBIDDEN.text)
+          .send({ message: "You are not authorized to delete this item" });
+      }
+      return item.deleteOne().then(() => res.send({ message: "Item deleted" }));
+    })
     .catch((err) => {
       console.error(err);
-      if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND.code).send(NOT_FOUND.text);
-      }
-      if (err.name === "CastError")
-        return res.status(INVALID_DATA.code).send(INVALID_DATA.text);
-
-      return res.status(SERVER_ERROR.code).send(SERVER_ERROR.text);
+      res.status(SERVER_ERROR.code).send({ message: "Error deleting item" });
     });
 };
 
