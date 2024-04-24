@@ -48,7 +48,13 @@ const deleteItem = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      res.status(SERVER_ERROR.code).send({ message: "Error deleting item" });
+      if (err.name === "DocumentNotFoundError") {
+        return res.status(NOT_FOUND.code).send(NOT_FOUND.text);
+      }
+      if (err.name === "CastError")
+        return res.status(INVALID_DATA.code).send(INVALID_DATA.text);
+
+      return res.status(SERVER_ERROR.code).send(SERVER_ERROR.text);
     });
 };
 
