@@ -126,7 +126,8 @@ const updateUser = (req, res) => {
       if (err.name === "ValidationError") {
         return res.status(INVALID_DATA.code).send(INVALID_DATA.text);
       }
-      return res.status(SERVER_ERROR.code).send(SERVER_ERROR.text);
+      return res.status(SERVER_ERROR.code).send({
+        message: SERVER_ERROR.text,});
     });
 };
 
