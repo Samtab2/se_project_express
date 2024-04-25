@@ -37,7 +37,11 @@ const createUser = (req, res) => {
     .then((hashedPassword) =>
       User.create({ name, avatar, email, password: hashedPassword })
     )
-    .then((user) => res.status(REQUEST_CREATED).send(user.select("-password")))
+    .then((user) =>
+      res
+        .status(REQUEST_CREATED)
+        .send({ name: user.name, avatar: user.avatar, email: user.email })
+    )
     .catch((err) => {
       console.error(err);
 
