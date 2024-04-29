@@ -14,10 +14,12 @@ const authorizationMiddleware = (req, res, next) => {
   const token = authorizationHeader.replace("Bearer ", "");
 
   return jwt.verify(token, JWT_SECRET, (err, payload) => {
+    console.log(UNAUTHORIZED);
     if (err) {
       return res
         .status(UNAUTHORIZED)
         .json({ message: "Unauthorized: Invalid token" });
+        
     }
 
     req.user = payload;
