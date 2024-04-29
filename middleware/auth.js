@@ -1,30 +1,32 @@
-const jwt = require("jsonwebtoken");
-const { JWT_SECRET } = require("../utlis/config");
-const { UNAUTHORIZED } = require("../utlis/errors");
+  const jwt = require("jsonwebtoken");
+  const { JWT_SECRET } = require("../utlis/config");
+  const { UNAUTHORIZED } = require("../utlis/errors");
 
-const authorizationMiddleware = (req, res, next) => {
-  const authorizationHeader = req.headers.authorization;
 
-  if (!authorizationHeader || !authorizationHeader.startsWith("Bearer ")) {
-    return res
-      .status(UNAUTHORIZED)
-      .json({ message: "Unauthorized: Missing or invalid token" });
-  }
 
-  const token = authorizationHeader.replace("Bearer ", "");
+  const authorizationMiddleware = (req, res, next) => {
+    const authorizationHeader = req.headers.authorization;
 
-  return jwt.verify(token, JWT_SECRET, (err, payload) => {
-    console.log(UNAUTHORIZED);
-    if (err) {
+    if (!authorizationHeader || !authorizationHeader.startsWith("Bearer ")) {
       return res
-        .status(UNAUTHORIZED)
-        .json({ message: "Unauthorized: Invalid token" });
-        
+        .status(UNAUTHORIZED.status)
+        .json({ message: "Unauthorized: Missing or invalid token" });
     }
 
-    req.user = payload;
-    return next();
-  });
-};
+    const token = authorizationHeader.replace("Bearer ", "");
 
-module.exports = authorizationMiddleware;
+    return jwt.verify(token, JWT_SECRET, (err, payload) => {
+      console.log(UNAUTHORIZED.status);
+      if (err) {
+        return res
+          .status(UNAUTHORIZED.status)
+          .json({ message: "Unauthorized: Invalid token" });
+          
+      }
+
+      req.user = payload;
+      return next();
+    });
+  };
+
+  module.exports = authorizationMiddleware;
