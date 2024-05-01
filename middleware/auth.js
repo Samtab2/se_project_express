@@ -1,6 +1,6 @@
   const jwt = require("jsonwebtoken");
   const { JWT_SECRET } = require("../utlis/config");
-  const { UNAUTHORIZED } = require("../utlis/errors");
+  const { UNAUTHORIZED  } = require("../utlis/errors");
 
 
 
@@ -9,17 +9,17 @@
 
     if (!authorizationHeader || !authorizationHeader.startsWith("Bearer ")) {
       return res
-        .status(UNAUTHORIZED.status)
+        .status(UNAUTHORIZED.code)
         .json({ message: "Unauthorized: Missing or invalid token" });
     }
 
     const token = authorizationHeader.replace("Bearer ", "");
 
     return jwt.verify(token, JWT_SECRET, (err, payload) => {
-      console.log(UNAUTHORIZED.status);
+      console.log(UNAUTHORIZED.code);
       if (err) {
         return res
-          .status(UNAUTHORIZED.status)
+          .status(UNAUTHORIZED.code)
           .json({ message: "Unauthorized: Invalid token" });
           
       }
