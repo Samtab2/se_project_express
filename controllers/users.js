@@ -28,7 +28,9 @@ const createUser = (req, res) => {
   User.findOne({ email })
     .then((existingUser) => {
       if (existingUser) {
-        return res.status(CONFLICT.code).send(CONFLICT.text);
+        console.log("Sending respone: existingUser conflict");
+        const err = new Error(CONFLICT.text.message);
+        throw err;
       }
 
       // If no existing user, create a new one
@@ -44,6 +46,10 @@ const createUser = (req, res) => {
     )
     .catch((err) => {
       console.error(err);
+
+      if (err.status) {
+        return res.status(err.status).send({ message: err.message });
+      }
 
       if (err.code === 11000) {
         return res.status(CONFLICT.code).send(CONFLICT.text);
