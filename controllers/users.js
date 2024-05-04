@@ -21,49 +21,38 @@ const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
 
   if (!email) {
-    return res.status(INVALID_DATA.code).send({ message: "Email is required" });
+    return res
+      .status(INVALID_DATA.code)
+      .send({ message: "Email or password is invalid" });
   }
 
-  // Check if email already exists
-  User.findOne({ email })
-    .then((existingUser) => {
-      if (existingUser) {
-        console.log("Sending respone: existingUser conflict");
-        const err = new Error(CONFLICT.text.message);
-        err.status = CONFLICT.code;
-        throw err;
-      }
+  // If no existing user, create a new one
+  return bcrypt
+    .hash(password, 10)
 
-      // If no existing user, create a new one
-      return bcrypt.hash(password, 10);
-    })
     .then((hashedPassword) =>
       User.create({ name, avatar, email, password: hashedPassword })
     )
-    .then((user) =>
+    .then((newUser) =>
       res
         .status(REQUEST_CREATED)
-        .send({ name: user.name, avatar: user.avatar, email: user.email })
+        .send({
+          name: newUser.name,
+          avatar: newUser.avatar,
+          email: newUser.email,
+        })
     )
     .catch((err) => {
       console.error(err);
-      res.status(err.status || SERVER_ERROR.code).send({
-        message: err.message || SERVER_ERROR.text,
-      })
-                     
-
-
+      if (err.name === "ValidationError") {
+        return res.status(INVALID_DATA.code).send(INVALID_DATA.text);
+      }
       if (err.code === 11000) {
         return res.status(CONFLICT.code).send(CONFLICT.text);
       }
 
-      if (err.name === "ValidationError") {
-        return res.status(INVALID_DATA.code).send(INVALID_DATA.text);
-      }
-
       return res.status(SERVER_ERROR.code).send(SERVER_ERROR.text);
     });
-  return null;
 };
 
 // GET
@@ -135,7 +124,8 @@ const updateUser = (req, res) => {
         return res.status(INVALID_DATA.code).send(INVALID_DATA.text);
       }
       return res.status(SERVER_ERROR.code).send({
-        message: SERVER_ERROR.text,});
+        message: SERVER_ERROR.text,
+      });
     });
 };
 
