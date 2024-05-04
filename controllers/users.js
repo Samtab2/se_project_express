@@ -30,6 +30,7 @@ const createUser = (req, res) => {
       if (existingUser) {
         console.log("Sending respone: existingUser conflict");
         const err = new Error(CONFLICT.text.message);
+        err.status = CONFLICT.code;
         throw err;
       }
 
@@ -46,10 +47,11 @@ const createUser = (req, res) => {
     )
     .catch((err) => {
       console.error(err);
+      res.status(err.status || SERVER_ERROR.code).send({
+        message: err.message || SERVER_ERROR.text,
+      })
+                     
 
-      if (err.status) {
-        return res.status(err.status).send({ message: err.message });
-      }
 
       if (err.code === 11000) {
         return res.status(CONFLICT.code).send(CONFLICT.text);
