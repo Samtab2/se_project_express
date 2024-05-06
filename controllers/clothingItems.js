@@ -9,7 +9,7 @@ const {
 } = require("../utlis/errors");
 
 // Create
-const createItem = (req, res) => {
+const addItem = (req, res) => {
   const { name, weather, imageUrl } = req.body;
 
   ClothingItem.create({ name, weather, imageUrl, owner: req.user._id })
@@ -59,7 +59,7 @@ const deleteItem = (req, res) => {
 };
 
 // like
-const likeItem = (req, res) => {
+const addLike = (req, res) => {
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
     { $addToSet: { likes: req.user._id } },
@@ -82,7 +82,7 @@ const likeItem = (req, res) => {
 };
 
 // Dislike
-const dislikeItem = (req, res) => {
+const removeLike = (req, res) => {
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
     { $pull: { likes: req.user._id } },
@@ -105,9 +105,9 @@ const dislikeItem = (req, res) => {
 };
 
 module.exports = {
-  createItem,
+  addItem,
   getItems,
   deleteItem,
-  likeItem,
-  dislikeItem,
+  addLike,
+  removeLike,
 };
