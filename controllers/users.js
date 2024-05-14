@@ -110,14 +110,14 @@ const loginUser = (req, res) => {
 
 // UPDATE USER
 const updateUser = (req, res) => {
-  const { name, avatar } = req.body;
+  const { name, avatar, _id } = req.body;
   const userId = req.user._id;
   User.findByIdAndUpdate(
     userId,
-    { name, avatar },
+    { name, avatar, _id },
     { new: true, runValidators: true }
   )
-    .then(() => res.status(REQUEST_SUCCESSFUL).send({ name, avatar }))
+    .then(() => res.status(REQUEST_SUCCESSFUL).send({ name, avatar, _id }))
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
