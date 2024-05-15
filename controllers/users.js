@@ -117,7 +117,7 @@ const updateUser = (req, res) => {
     { name, avatar, _id },
     { new: true, runValidators: true }
   )
-    .then(() => res.status(REQUEST_SUCCESSFUL).send({ name, avatar, _id }))
+    .then((user) => res.status(REQUEST_SUCCESSFUL).send(user))
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
