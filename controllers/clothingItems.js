@@ -60,6 +60,7 @@ const deleteItem = (req, res) => {
 
 // like
 const addLike = (req, res) => {
+  console.log("Item ID received: ", req.params.itemId);
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
     { $addToSet: { likes: req.user._id } },
