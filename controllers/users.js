@@ -34,13 +34,11 @@ const createUser = (req, res) => {
       User.create({ name, avatar, email, password: hashedPassword })
     )
     .then((newUser) =>
-      res
-        .status(REQUEST_CREATED)
-        .send({
-          name: newUser.name,
-          avatar: newUser.avatar,
-          email: newUser.email,
-        })
+      res.status(REQUEST_CREATED).send({
+        name: newUser.name,
+        avatar: newUser.avatar,
+        email: newUser.email,
+      })
     )
     .catch((err) => {
       console.error(err);
