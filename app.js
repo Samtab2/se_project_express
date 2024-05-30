@@ -4,9 +4,10 @@ const cors = require("cors");
 
 const mainRouter = require("./routes/index");
 
-const errorHandler = require("./middleware/error-handler")
 
 const {requestLogger, errorLogger} = require("./middleware/logger");
+
+
 
 const app = express();
 const { PORT = 3001 } = process.env;
@@ -23,6 +24,10 @@ app.use(express.json());
 app.use(cors());
 
 app.use("/", mainRouter);
+
+
+
+
 
 
 
