@@ -3,8 +3,8 @@ const BadRequestError = require("../errors/bad-request-err");
 
 
 
-module.exports.getProfile = (req, res, next) => User
-  .findOne({ _id: req.params.userId })
+module.exports.getProfile = (req, res, next) =>
+  User.findOne({ _id: req.params.userId })
   .then((user) => {
     if (!user) {
       throw new NotFoundError('No user with matching ID found');
