@@ -8,7 +8,7 @@ const mainRouter = require("./routes/index");
 
 const { requestLogger, errorLogger } = require("./middleware/logger");
 
-const errorHandler = require("./middleware/error-handler")
+const errorHandler = require("./middleware/error-handler");
 
 const app = express();
 const { PORT = 3001 } = process.env;
@@ -24,8 +24,6 @@ mongoose
 app.use(express.json());
 app.use(cors());
 
-
-
 app.use(errors());
 
 app.use("/", mainRouter);
@@ -40,12 +38,12 @@ console.log("testing");
 
 app.use((err, req, res, next) => {
   console.error(err);
-  return res.status(500).send({ message: "An error occurred on the server" });
-});
-
-app.use((err, req, res, next) => {
-  console.error(err);
-  res.send({ message: err.message });
+  const { statusCode = 500, message } = err;
+  res
+    .status(statusCode)
+    .send({
+      message: statusCode === 500 ? "An error occurred on the server" : message,
+    });
 });
 
 app.listen(PORT, () => {

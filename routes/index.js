@@ -4,12 +4,14 @@ const userRouter = require("./users");
 const { NOT_FOUND } = require("../utlis/errors");
 const { loginUser, createUser } = require("../controllers/users");
 const authorizationMiddleware = require("../middleware/auth");
+const { NotFoundError } = require("../errors/not-found-err");
 
 router.use("/items", clothingItemsRouter);
 router.use("/users", authorizationMiddleware, userRouter);
 router.post("/signin", loginUser);
 router.post("/signup", createUser);
 
-router.use((req, res) => res.status(NOT_FOUND.code).send(NOT_FOUND.text));
+router.use(() => new NotFoundError(NOT_FOUND.text));
+
 
 module.exports = router;

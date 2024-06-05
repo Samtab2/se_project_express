@@ -1,42 +1,24 @@
-const badRequestError = {
-  code: 400,
-  text: {
-    message: "The data is invalid",
-  },
-};
+class ErrorHandler {
+  constructor(err, req, res, next) {
+    this.err = err;
+    this.req = req;
+    this.res = res;
+    this.next = next;
+  }
 
-const notFoundError = {
-  code: 404,
-  text: {
-    message: "Not found",
-  },
-};
+  get statusCode() {
+    return this.err.statusCode || 500;
+  }
 
-const conflictError = {
-  code: 409,
-  text: {
-    message: "Duplicate key error",
-  },
-};
+  get logging() {
+    return this.err.logging;
+  }
 
-const unauthorizedError = {
-  code: 401,
-  text: {
-    message: "Unauthorized",
-  },
-};
+  static handle(err, req, res, next) {
+    const errorHandler = new ErrorHandler(err, req, res, next);
+    // implement error handling logic here
+    res.status(errorHandler.statusCode).send({ error: errorHandler.logging });
+  }
+}
 
-const ForbiddenError = {
-  code: 403,
-  text: {
-    message: "Forbidden",
-  },
-};
-
-module.exports = {
-  badRequestError,
-  notFoundError,
-  conflictError,
-  unauthorizedError,
-  ForbiddenError,
-};
+module.exports = ErrorHandler;

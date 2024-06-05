@@ -11,19 +11,21 @@ const {
   REQUEST_CREATED,
   INVALID_DATA,
   NOT_FOUND,
-  SERVER_ERROR,
   CONFLICT,
   UNAUTHORIZED,
 } = require("../utlis/errors");
 
+const { NotFoundError } = require("../errors/not-found-err");
+const { BadRequestError } = require("../errors/bad-request-err");
+const { ConflictError } = require("../errors/conflict-err");
+const { UnthorizedError } = require("../errors/unauthorized-err");
+
 // CREATE
-const createUser = (req, res) => {
+const createUser = (req, res, next) => {
   const { name, avatar, email, password } = req.body;
 
   if (!email) {
-    return res
-      .status(INVALID_DATA.code)
-      .send({ message: "Email or password is invalid" });
+    throw new BadRequestError({ message: "Email or password is invalid" });
   }
 
   // If no existing user, create a new one
@@ -43,53 +45,52 @@ const createUser = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        return res.status(INVALID_DATA.code).send(INVALID_DATA.text);
+        throw new BadRequestError(INVALID_DATA.text);
       }
       if (err.code === 11000) {
-        return res.status(CONFLICT.code).send(CONFLICT.text);
+        throw new ConflictError(CONFLICT.text);
+      } else {
+        next(err);
       }
-
-      return res.status(SERVER_ERROR.code).send(SERVER_ERROR.text);
     });
 };
 
 // GET
-const getUser = (req, res) =>
+const getUser = (req, res, next) =>
   User.findById(req.user._id)
     .orFail()
     .then((user) => res.status(REQUEST_SUCCESSFUL).send(user))
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND.code).send(NOT_FOUND.text);
+        throw new NotFoundError(NOT_FOUND.text);
       }
       if (err.name === "CastError") {
-        return res.status(INVALID_DATA.code).send(INVALID_DATA.text);
+        throw new BadRequestError(INVALID_DATA.text);
+      } else {
+        next(err);
       }
-      return res.status(SERVER_ERROR.code).send(SERVER_ERROR.text);
     });
 
 // Login
 
-const loginUser = (req, res) => {
+const loginUser = (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email) {
-    return res.status(INVALID_DATA.code).send({
+    throw new BadRequestError({
       message: "The email field is required",
     });
   }
   if (!password) {
-    return res.status(INVALID_DATA.code).send({
+    throw new BadRequestError({
       message: "The password field is required",
     });
   }
   return User.findUserByCredentials(email, password)
     .then((user) => {
       if (!user) {
-        return res
-          .status(UNAUTHORIZED.code)
-          .send({ message: "Incorrect email or password" });
+        throw new UnthorizedError({ message: "Incorrect email or password" });
       }
 
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
@@ -100,14 +101,15 @@ const loginUser = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.message === "Incorrect email or password") {
-        return res.status(UNAUTHORIZED.code).send(UNAUTHORIZED.text);
+        throw new UnthorizedError(UNAUTHORIZED.text);
+      } else {
+        next(err);
       }
-      return res.status(SERVER_ERROR.code).send(SERVER_ERROR.text);
     });
 };
 
 // UPDATE USER
-const updateUser = (req, res) => {
+const updateUser = (req, res, next) => {
   const { name, avatar, _id } = req.body;
   const userId = req.user._id;
   User.findByIdAndUpdate(
@@ -119,11 +121,10 @@ const updateUser = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        return res.status(INVALID_DATA.code).send(INVALID_DATA.text);
+        throw new BadRequestError(INVALID_DATA.text);
+      } else {
+        next(err);
       }
-      return res.status(SERVER_ERROR.code).send({
-        message: SERVER_ERROR.text,
-      });
     });
 };
 
