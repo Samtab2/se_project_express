@@ -15,10 +15,10 @@ const {
   UNAUTHORIZED,
 } = require("../utlis/errors");
 
-const { NotFoundError } = require("../errors/not-found-err");
-const { BadRequestError } = require("../errors/bad-request-err");
-const { ConflictError } = require("../errors/conflict-err");
-const { UnthorizedError } = require("../errors/unauthorized-err");
+const NotFoundError = require("../errors/not-found-err");
+const BadRequestError = require("../errors/bad-request-err");
+const ConflictError = require("../errors/conflict-err");
+const UnthorizedError = require("../errors/unauthorized-err");
 
 // CREATE
 const createUser = (req, res, next) => {

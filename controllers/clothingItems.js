@@ -6,9 +6,9 @@ const {
   NOT_FOUND,
 } = require("../utlis/errors");
 
-const { NotFoundError } = require("../errors/not-found-err");
-const { BadRequestError } = require("../errors/bad-request-err");
-const { ForbiddenError } = require("../errors/forbidden-err");
+const NotFoundError = require("../errors/not-found-err");
+const BadRequestError = require("../errors/bad-request-err");
+const ForbiddenError = require("../errors/forbidden-err");
 
 // Create
 const addItem = (req, res, next) => {
