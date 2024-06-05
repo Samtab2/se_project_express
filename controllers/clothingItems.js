@@ -19,7 +19,7 @@ const addItem = (req, res, next) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        throw new BadRequestError(INVALID_DATA.text);
+        next (new BadRequestError(INVALID_DATA.message));
       } else {
         next(err);
       }
@@ -42,19 +42,19 @@ const deleteItem = (req, res, next) => {
     .orFail()
     .then((item) => {
       if (item.owner.toString() !== req.user._id) {
-        throw new ForbiddenError({
+        next (new ForbiddenError({
           message: "You are not authorized to delete this item",
-        });
+        }));
       }
       return item.deleteOne().then(() => res.send({ message: "Item deleted" }));
     })
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        throw new NotFoundError(NOT_FOUND.text);
+        next (new NotFoundError(NOT_FOUND.message));
       }
       if (err.name === "CastError")
-        throw new BadRequestError(INVALID_DATA.text);
+        next (new BadRequestError(INVALID_DATA.message));
       next(err);
     });
 };
@@ -68,13 +68,13 @@ const addLike = (req, res, next) => {
     { new: true }
   )
     .orFail(() => {
-      throw new NotFoundError(NOT_FOUND.text);
+      next (new NotFoundError(NOT_FOUND.message));
     })
     .then((item) => res.status(REQUEST_SUCCESSFUL).send(item))
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError")
-        throw new BadRequestError(INVALID_DATA.text);
+        next (new BadRequestError(INVALID_DATA.message));
       next(err);
     });
 };
@@ -87,13 +87,13 @@ const removeLike = (req, res, next) => {
     { new: true }
   )
     .orFail(() => {
-      throw new NotFoundError(NOT_FOUND.text);
+      next (new NotFoundError(NOT_FOUND.message));
     })
     .then((item) => res.status(REQUEST_SUCCESSFUL).send(item))
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError")
-        throw new BadRequestError(INVALID_DATA.text);
+        next (new BadRequestError(INVALID_DATA.message));
       next(err);
     });
 };

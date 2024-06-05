@@ -25,7 +25,7 @@ const createUser = (req, res, next) => {
   const { name, avatar, email, password } = req.body;
 
   if (!email) {
-    throw new BadRequestError({ message: "Email or password is invalid" });
+    next(new BadRequestError({ message: "Email or password is invalid" }));
   }
 
   // If no existing user, create a new one
@@ -45,10 +45,10 @@ const createUser = (req, res, next) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        throw new BadRequestError(INVALID_DATA.text);
+        next(new BadRequestError(INVALID_DATA.message));
       }
       if (err.code === 11000) {
-        throw new ConflictError(CONFLICT.text);
+        next(new ConflictError(CONFLICT.message));
       } else {
         next(err);
       }
@@ -63,10 +63,10 @@ const getUser = (req, res, next) =>
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        throw new NotFoundError(NOT_FOUND.text);
+        next(new NotFoundError(NOT_FOUND.message));
       }
       if (err.name === "CastError") {
-        throw new BadRequestError(INVALID_DATA.text);
+        next(new BadRequestError(INVALID_DATA.message));
       } else {
         next(err);
       }
@@ -78,9 +78,11 @@ const loginUser = (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email) {
-    throw new BadRequestError({
-      message: "The email field is required",
-    });
+    next(
+      new BadRequestError({
+        message: "The email field is required",
+      })
+    );
   }
   if (!password) {
     throw new BadRequestError({
@@ -90,7 +92,7 @@ const loginUser = (req, res, next) => {
   return User.findUserByCredentials(email, password)
     .then((user) => {
       if (!user) {
-        throw new UnthorizedError({ message: "Incorrect email or password" });
+        next(new UnthorizedError({ message: "Incorrect email or password" }));
       }
 
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
@@ -101,7 +103,7 @@ const loginUser = (req, res, next) => {
     .catch((err) => {
       console.error(err);
       if (err.message === "Incorrect email or password") {
-        throw new UnthorizedError(UNAUTHORIZED.text);
+        next(new UnthorizedError(UNAUTHORIZED.message));
       } else {
         next(err);
       }
@@ -121,7 +123,7 @@ const updateUser = (req, res, next) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        throw new BadRequestError(INVALID_DATA.text);
+        next(new BadRequestError(INVALID_DATA.message));
       } else {
         next(err);
       }
