@@ -29,7 +29,7 @@ app.use(errors());
 app.use("/", mainRouter);
 
 app.use(requestLogger);
-app.use(routes);
+
 
 
 app.use(errorLogger);
