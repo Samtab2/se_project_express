@@ -2,7 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 
-const  errors  = require("celebrate");
+const { errors } = require("celebrate");
 
 const mainRouter = require("./routes/index");
 
@@ -24,15 +24,11 @@ mongoose
 app.use(express.json());
 app.use(cors());
 
-app.use(errors());
-
 app.use("/", mainRouter);
-
 app.use(requestLogger);
-
-
-
 app.use(errorLogger);
+
+app.use(errors());
 
 app.use(errorHandler);
 
