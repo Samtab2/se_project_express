@@ -34,15 +34,6 @@ app.use(errorHandler);
 
 console.log("testing");
 
-app.use((err, req, res, next) => {
-  console.error(err);
-  const { statusCode = 500, message } = err;
-  res.status(statusCode).send({
-    message: statusCode === 500 ? "An error occurred on the server" : message,
-  });
-  return res.status(500).send({ message: "An error occurred on the server" });
-});
-
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
