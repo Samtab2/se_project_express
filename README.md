@@ -22,23 +22,47 @@ Testing: Develop unit tests, integration tests, and end-to-end tests to ensure t
 Deployment: Deploy the server on a remote machine using containerization and orchestration tools for scalability and maintainability.
 
 Technologies and Techniques Used
+
 Backend Technologies
+
 Node.js: Used as the runtime environment for the server-side application.
 Express: Employed as the web application framework to build robust and scalable APIs.
+
 MongoDB: Chosen as the database to store and manage application data effectively.
 JWT (JSON Web Tokens): Implemented for user authentication and authorization.
 Security Measures
+
 Helmet: Used to secure Express apps by setting various HTTP headers.
 bcrypt: Employed for hashing and salting passwords to enhance security.
+
 CORS: Implemented CORS middleware to handle cross-origin resource sharing.
 Testing
+
 Jest: Utilized for writing unit tests and integration tests for the server-side code.
+
 Supertest: Used alongside Jest for testing HTTP endpoints and API responses.
 DevOps and Deployment
+
 Docker: Containerized the application to ensure consistent and isolated environments.
+
 Kubernetes: Orchestrated and managed containerized applications for scalability and high availability.
+
 CI/CD Pipeline: Implemented continuous integration and continuous deployment using Jenkins or another CI/CD tool.
+
 Other Tools and Libraries
+
 Mongoose: Used as an ODM (Object Data Modeling) library for MongoDB to simplify interactions with the database.
+
 dotenv: Used for managing environment variables and configuration settings.
 
+Joi and Celebrate: Used for an express middleware function that wraps the joi validation library.
+
+
+
+Domains
+
+api.sammywtwr.wildsurf.net
+
+sammywtwr.wildsurf.net
+
+www.sammywtwr.wildsurf.net	
