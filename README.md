@@ -53,9 +53,14 @@ Other Tools and Libraries
 
 Mongoose: Used as an ODM (Object Data Modeling) library for MongoDB to simplify interactions with the database.
 
-dotenv: Used for managing environment variables and configuration settings.
+Dotenv: Used for managing environment variables and configuration settings.
 
 Joi and Celebrate: Used for an express middleware function that wraps the joi validation library.
+
+Winston: Used for a simple and universal logging library with support for multiple transports.
+
+
+ExpressWinston: Used for provides middleware for request and error logging of your express.js application.
 
 
 
@@ -65,4 +70,4 @@ api.sammywtwr.wildsurf.net
 
 sammywtwr.wildsurf.net
 
-www.sammywtwr.wildsurf.net	
+www.sammywtwr.wildsurf.net
