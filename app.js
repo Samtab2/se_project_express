@@ -21,11 +21,9 @@ mongoose
     console.log("Connected to DB");
   })
   .catch(console.error);
-
+app.use(requestLogger);
 app.use(express.json());
 app.use(cors());
-
-app.use(requestLogger);
 
 app.get("/crash-test", () => {
   setTimeout(() => {

@@ -1,7 +1,6 @@
 const router = require("express").Router();
 const clothingItemsRouter = require("./clothingItems");
 const userRouter = require("./users");
-const { NOT_FOUND } = require("../utlis/errors");
 const { loginUser, createUser } = require("../controllers/users");
 const authorizationMiddleware = require("../middleware/auth");
 const NotFoundError = require("../errors/not-found-err");
@@ -16,7 +15,7 @@ router.post("/signin", validateUserLogin, loginUser);
 router.post("/signup", validateUserBody, createUser);
 
 router.use(() => {
-  throw new NotFoundError(NOT_FOUND.text);
+  throw new NotFoundError("Not found");
 });
 
 module.exports = router;

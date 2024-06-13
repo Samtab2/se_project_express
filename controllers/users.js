@@ -9,10 +9,6 @@ const { JWT_SECRET } = require("../utlis/config");
 const {
   REQUEST_SUCCESSFUL,
   REQUEST_CREATED,
-  INVALID_DATA,
-  NOT_FOUND,
-  CONFLICT,
-  UNAUTHORIZED,
 } = require("../utlis/errors");
 
 const NotFoundError = require("../errors/not-found-err");
@@ -25,7 +21,7 @@ const createUser = (req, res, next) => {
   const { name, avatar, email, password } = req.body;
 
   if (!email) {
-    next(new BadRequestError({ message: "Email or password is invalid" }));
+    next(new BadRequestError("Email or password is invalid"));
   }
 
   // If no existing user, create a new one
@@ -45,10 +41,10 @@ const createUser = (req, res, next) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        next(new BadRequestError(INVALID_DATA.text));
+        next(new BadRequestError("The data is invalid"));
       }
       if (err.code === 11000) {
-        next(new ConflictError(CONFLICT.text));
+        next(new ConflictError("Duplicate key error"));
       } else {
         next(err);
       }
@@ -63,10 +59,10 @@ const getUser = (req, res, next) =>
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        next(new NotFoundError(NOT_FOUND.text));
+        next(new NotFoundError("Not found"));
       }
       if (err.name === "CastError") {
-        next(new BadRequestError(INVALID_DATA.text));
+        next(new BadRequestError("The data is invalid"));
       } else {
         next(err);
       }
@@ -79,20 +75,18 @@ const loginUser = (req, res, next) => {
 
   if (!email) {
     next(
-      new BadRequestError({
-        message: "The email field is required",
-      })
+      new BadRequestError("The email field is required")
     );
   }
   if (!password) {
-    throw new BadRequestError({
-      message: "The password field is required",
-    });
+    throw new BadRequestError(
+      "The password field is required",
+    );
   }
   return User.findUserByCredentials(email, password)
     .then((user) => {
       if (!user) {
-        next(new UnauthorizedError({ message: "Incorrect email or password" }));
+        next(new UnauthorizedError("Incorrect email or password" ));
       }
 
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
@@ -103,7 +97,7 @@ const loginUser = (req, res, next) => {
     .catch((err) => {
       console.error(err);
       if (err.message === "Incorrect email or password") {
-        next(new UnauthorizedError(UNAUTHORIZED.text));
+        next(new UnauthorizedError("Incorrect email or password" ));
       } else {
         next(err);
       }
@@ -123,7 +117,7 @@ const updateUser = (req, res, next) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        next(new BadRequestError(INVALID_DATA.text));
+        next(new BadRequestError("The data is invalid"));
       } else {
         next(err);
       }

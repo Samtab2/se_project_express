@@ -1,10 +1,5 @@
 const ClothingItem = require("../models/clothingItems");
-const {
-  REQUEST_SUCCESSFUL,
-  REQUEST_CREATED,
-  INVALID_DATA,
-  NOT_FOUND,
-} = require("../utlis/errors");
+const { REQUEST_SUCCESSFUL, REQUEST_CREATED } = require("../utlis/errors");
 
 const NotFoundError = require("../errors/not-found-err");
 const BadRequestError = require("../errors/bad-request-err");
@@ -19,7 +14,7 @@ const addItem = (req, res, next) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        next(new BadRequestError(INVALID_DATA.text));
+        next(new BadRequestError("The data is invalid"));
       } else {
         next(err);
       }
@@ -43,9 +38,7 @@ const deleteItem = (req, res, next) => {
     .then((item) => {
       if (item.owner.toString() !== req.user._id) {
         return next(
-          new ForbiddenError({
-            message: "You are not authorized to delete this item",
-          })
+          new ForbiddenError("You are not authorized to delete this item")
         );
       }
       return item.deleteOne().then(() => res.send({ message: "Item deleted" }));
@@ -53,10 +46,10 @@ const deleteItem = (req, res, next) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        next(new NotFoundError(NOT_FOUND.text));
+        next(new NotFoundError("Not found"));
       }
       if (err.name === "CastError")
-        next(new BadRequestError(INVALID_DATA.text));
+        next(new BadRequestError("The data is invalid"));
       next(err);
     });
 };
@@ -70,13 +63,13 @@ const addLike = (req, res, next) => {
     { new: true }
   )
     .orFail(() => {
-      next(new NotFoundError(NOT_FOUND.text));
+      next(new NotFoundError("Not found"));
     })
     .then((item) => res.status(REQUEST_SUCCESSFUL).send(item))
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError")
-        next(new BadRequestError(INVALID_DATA.text));
+        next(new BadRequestError("The data is invalid"));
       next(err);
     });
 };
@@ -89,13 +82,13 @@ const removeLike = (req, res, next) => {
     { new: true }
   )
     .orFail(() => {
-      next(new NotFoundError(NOT_FOUND.text));
+      next(new NotFoundError("Not found"));
     })
     .then((item) => res.status(REQUEST_SUCCESSFUL).send(item))
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError")
-        next(new BadRequestError(INVALID_DATA.text));
+        next(new BadRequestError("The data is invalid"));
       next(err);
     });
 };

@@ -7,18 +7,17 @@ const authorizationMiddleware = (req, res, next) => {
   const authorizationHeader = req.headers.authorization;
 
   if (!authorizationHeader || !authorizationHeader.startsWith("Bearer ")) {
-    next(
-      new UnauthorizedError({
-        message: "Unauthorized: Missing or invalid token",
-      })
-    );
+    next(new UnauthorizedError("Unauthorized: Invalid token"));
   }
+
+
+  
 
   const token = authorizationHeader.replace("Bearer ", "");
 
   return jwt.verify(token, JWT_SECRET, (err, payload) => {
     if (err) {
-      next(new UnauthorizedError({ message: "Unauthorized: Invalid token" }));
+       next(new UnauthorizedError("Unauthorized: Invalid token"));
     }
 
     req.user = payload;
