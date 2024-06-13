@@ -19,7 +19,7 @@ const addItem = (req, res, next) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        next (new BadRequestError(INVALID_DATA.message));
+        next(new BadRequestError(INVALID_DATA.text));
       } else {
         next(err);
       }
@@ -38,23 +38,25 @@ const getItems = (req, res, next) => {
 // Delete
 const deleteItem = (req, res, next) => {
   const { itemId } = req.params;
-  ClothingItem.findByIdAndRemove(itemId)
+  ClothingItem.findById(itemId)
     .orFail()
     .then((item) => {
       if (item.owner.toString() !== req.user._id) {
-        next (new ForbiddenError({
-          message: "You are not authorized to delete this item",
-        }));
+        return next(
+          new ForbiddenError({
+            message: "You are not authorized to delete this item",
+          })
+        );
       }
       return item.deleteOne().then(() => res.send({ message: "Item deleted" }));
     })
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        next (new NotFoundError(NOT_FOUND.message));
+        next(new NotFoundError(NOT_FOUND.text));
       }
       if (err.name === "CastError")
-        next (new BadRequestError(INVALID_DATA.message));
+        next(new BadRequestError(INVALID_DATA.text));
       next(err);
     });
 };
@@ -68,13 +70,13 @@ const addLike = (req, res, next) => {
     { new: true }
   )
     .orFail(() => {
-      next (new NotFoundError(NOT_FOUND.message));
+      next(new NotFoundError(NOT_FOUND.text));
     })
     .then((item) => res.status(REQUEST_SUCCESSFUL).send(item))
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError")
-        next (new BadRequestError(INVALID_DATA.message));
+        next(new BadRequestError(INVALID_DATA.text));
       next(err);
     });
 };
@@ -87,13 +89,13 @@ const removeLike = (req, res, next) => {
     { new: true }
   )
     .orFail(() => {
-      next (new NotFoundError(NOT_FOUND.message));
+      next(new NotFoundError(NOT_FOUND.text));
     })
     .then((item) => res.status(REQUEST_SUCCESSFUL).send(item))
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError")
-        next (new BadRequestError(INVALID_DATA.message));
+        next(new BadRequestError(INVALID_DATA.text));
       next(err);
     });
 };

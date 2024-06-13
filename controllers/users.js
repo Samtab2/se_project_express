@@ -18,7 +18,7 @@ const {
 const NotFoundError = require("../errors/not-found-err");
 const BadRequestError = require("../errors/bad-request-err");
 const ConflictError = require("../errors/conflict-err");
-const UnthorizedError = require("../errors/unauthorized-err");
+const UnauthorizedError = require("../errors/unauthorized-err");
 
 // CREATE
 const createUser = (req, res, next) => {
@@ -45,10 +45,10 @@ const createUser = (req, res, next) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        next(new BadRequestError(INVALID_DATA.message));
+        next(new BadRequestError(INVALID_DATA.text));
       }
       if (err.code === 11000) {
-        next(new ConflictError(CONFLICT.message));
+        next(new ConflictError(CONFLICT.text));
       } else {
         next(err);
       }
@@ -63,10 +63,10 @@ const getUser = (req, res, next) =>
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        next(new NotFoundError(NOT_FOUND.message));
+        next(new NotFoundError(NOT_FOUND.text));
       }
       if (err.name === "CastError") {
-        next(new BadRequestError(INVALID_DATA.message));
+        next(new BadRequestError(INVALID_DATA.text));
       } else {
         next(err);
       }
@@ -92,7 +92,7 @@ const loginUser = (req, res, next) => {
   return User.findUserByCredentials(email, password)
     .then((user) => {
       if (!user) {
-        next(new UnthorizedError({ message: "Incorrect email or password" }));
+        next(new UnauthorizedError({ message: "Incorrect email or password" }));
       }
 
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
@@ -103,7 +103,7 @@ const loginUser = (req, res, next) => {
     .catch((err) => {
       console.error(err);
       if (err.message === "Incorrect email or password") {
-        next(new UnthorizedError(UNAUTHORIZED.message));
+        next(new UnauthorizedError(UNAUTHORIZED.text));
       } else {
         next(err);
       }
@@ -123,7 +123,7 @@ const updateUser = (req, res, next) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        next(new BadRequestError(INVALID_DATA.message));
+        next(new BadRequestError(INVALID_DATA.text));
       } else {
         next(err);
       }
